@@ -1,19 +1,16 @@
 const getComputerChoise = () => {
-    let randomNumber = Math.floor(Math.random() * (2 - 0 + 1)) + 0;
+    let randomNumber = Math.floor(Math.random() * 3);
     if (randomNumber === 0)
         return "rock";
-    
+
     else if (randomNumber === 1)
         return "paper";
     else
         return "scissors";
-    
+
 }
 const playRound = (computerChoice, playerChoice) => {
-    playerChoice = playerChoice;
-    computerChoice = computerChoice;
-    if (playerChoice !== "rock" && playerChoice !== "paper" && playerChoice !== "scissors")
-        return "INVALID CHOICE!!!";
+
     console.log("The computer choice = " + computerChoice + "\n Your choice is = " + playerChoice + "\n");
     if (playerChoice === computerChoice)
         return "Tie";
@@ -33,35 +30,69 @@ const playRound = (computerChoice, playerChoice) => {
             return "The computer is the winner scissors > paper";
     }
 }
-const game = () => {
-    let playerChoice;
-    let scoreP = 0, scoreC = 0;
-    let winner;
-    let tie = 0;
-    let result;
-    for (let i = 1; i < 6; i++){
-        if (result === "Tie")
-            i = tie;
-        console.log("Round N°" + i);
-        do {
-            playerChoice = prompt("Choose rock/paper/scissors");
-            playerChoice = playerChoice.toLowerCase().trim();
-        } while (playerChoice !== "rock" && playerChoice !== "paper" && playerChoice !== "scissors");
-        
-        
-        result = playRound(getComputerChoise(), playerChoice);
-        console.log(result);
-        winner = result.split(" ")[0];
-        if (winner === "The")
-            scoreC++;
-        else if (winner === "You")
-            scoreP++;
-        else
-            tie = i;
-    }
-    if (scoreC > scoreP)
-        console.log("Computer is the Winner");
-    else
-        console.log("You are the winner!!!");
+
+
+
+let scoreP = 0;
+let scoreC = 0;
+let scoreContainer = document.querySelector(".score-container");
+//set the score to 0 for both the computer and the player
+const setScore = () => {
+    scoreContainer.childNodes[1].childNodes[1].textContent = scoreC;
+    scoreContainer.childNodes[3].childNodes[1].textContent = scoreP;
 }
-game();
+
+window.onload = () => {
+    setScore();
+}
+
+
+const getWinner = (str) => {
+    if (str.split(" ")[0] === "The")
+        return "c"; // c means the computer
+    else
+        return "p"; //p means the player
+
+}
+
+
+
+const buttons = document.querySelectorAll('.choice');
+let roundPlayed;
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        const result = document.querySelector('#result');
+        console.log(scoreC);
+        if (scoreC < 5 && scoreP < 5) {
+            const resultContainer = document.querySelector(".result-container");
+            roundPlayed = playRound(getComputerChoise(), button.id);
+            result.textContent = roundPlayed;
+            resultContainer.style.cssText = "display:inline;"
+            if (getWinner(roundPlayed) === 'c') {
+
+                scoreC++;
+                setScore();
+                if (scoreC === 5) {
+
+                    result.parentNode.textContent = "You LOST!<span id='result'></span>";
+                }
+            } else {
+                if (getWinner(roundPlayed) === 'p') {
+                    scoreP++;
+                    setScore();
+                    if (scoreP === 5) {
+                        result.parentNode.innerHTML = "You WIN!<span id='result'></span>";
+                    }
+                }
+
+            }
+        }
+
+
+    });
+});
+document.querySelector("#replay").addEventListener('click', () => {
+    scoreC = 0, scoreP = 0;
+    setScore();
+    document.querySelector(".result-container").style.cssText = "display:none;";
+});
