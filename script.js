@@ -31,6 +31,22 @@ const playRound = (computerChoice, playerChoice) => {
     }
 }
 
+const reRenderResultComponent = () => {
+        let resultContainerDOM = document.querySelector(".result-container");
+        resultContainerDOM.remove();
+        let resultContainer = document.createElement("div");
+        resultContainer.classList.add("result-container");
+        let span = document.createElement("span");
+        span.classList.add("result-span");
+        resultContainer.appendChild(span);
+        let resultSpan = document.createElement("span");resultSpan.setAttribute('id', 'result');
+        resultContainer.appendChild(resultSpan);
+        document.querySelector(".score-container").appendChild(resultContainer);
+        span.textContent = "Result: ";
+        resultSpan.textContent = ""
+
+        resultContainerDOM.remove();
+    }
 
 
 let scoreP = 0;
@@ -43,6 +59,7 @@ const setScore = () => {
 }
 
 window.onload = () => {
+
     setScore();
 }
 
@@ -56,17 +73,15 @@ const getWinner = (str) => {
 }
 
 
-
+const result = document.querySelector('#result');
 const buttons = document.querySelectorAll('.choice');
 let roundPlayed;
 buttons.forEach((button) => {
     button.addEventListener('click', () => {
-        const result = document.querySelector('#result');
-        console.log(scoreC);
         if (scoreC < 5 && scoreP < 5) {
             const resultContainer = document.querySelector(".result-container");
             roundPlayed = playRound(getComputerChoise(), button.id);
-            result.textContent = roundPlayed;
+            document.getElementById("result").textContent = roundPlayed;
             resultContainer.style.cssText = "display:inline;"
             if (getWinner(roundPlayed) === 'c') {
 
@@ -74,14 +89,14 @@ buttons.forEach((button) => {
                 setScore();
                 if (scoreC === 5) {
 
-                    result.parentNode.textContent = "You LOST!<span id='result'></span>";
+                    resultContainer.textContent = "You LOST!";
                 }
             } else {
                 if (getWinner(roundPlayed) === 'p') {
                     scoreP++;
                     setScore();
                     if (scoreP === 5) {
-                        result.parentNode.innerHTML = "You WIN!<span id='result'></span>";
+                        resultContainer.textContent = "You WIN!";
                     }
                 }
 
@@ -94,5 +109,5 @@ buttons.forEach((button) => {
 document.querySelector("#replay").addEventListener('click', () => {
     scoreC = 0, scoreP = 0;
     setScore();
-    document.querySelector(".result-container").style.cssText = "display:none;";
+    reRenderResultComponent();
 });
